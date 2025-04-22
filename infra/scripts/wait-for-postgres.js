@@ -1,6 +1,6 @@
-/* eslint-disable no-undef */
+const { exec } = require('node:child_process')
+
 function checkPostgres() {
-    const { exec } = require('child_process')
     exec('docker exec postgres-dev pg_isready --host localhost', handleReturn)
 
     function handleReturn(err, stdout) {
@@ -9,9 +9,9 @@ function checkPostgres() {
             checkPostgres()
             return
         }
-        console.log('\nPostgreSQL is ready!')
+        console.log('\n🟢 PostgreSQL is ready!\n')
     }
 }
 
-process.stdout.write('\n\nWaiting for PostgreSQL to be ready')
+process.stdout.write('\n\n🔴 Waiting for PostgreSQL to be ready')
 checkPostgres()
