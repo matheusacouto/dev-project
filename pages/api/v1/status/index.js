@@ -20,18 +20,16 @@ async function status(request, response) {
     const databaseOpenedConnectionsValue =
         databaseOpenedConnectionsResult.rows[0].count
 
-    response
-        .status(200)
-        .json({
-            updated_at: updatedAt,
-            dependencies: {
-                database: {
-                    version: databaseVersionValue,
-                    max_connections: parseInt(databaseMaxConnectionValue),
-                    opened_connections: databaseOpenedConnectionsValue,
-                },
+    response.status(200).json({
+        updated_at: updatedAt,
+        dependencies: {
+            database: {
+                version: databaseVersionValue,
+                max_connections: parseInt(databaseMaxConnectionValue),
+                opened_connections: databaseOpenedConnectionsValue,
             },
-        })
+        },
+    })
 }
 
 export default status
