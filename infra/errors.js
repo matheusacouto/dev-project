@@ -1,11 +1,51 @@
 export class InternalServerError extends Error {
     constructor({ cause, statusCode }) {
-        super('Um erro interno não esperado aconteceu.', {
+        super('An unexpected internal error occurred.', {
             cause,
         })
         this.name = 'InternalServerError'
-        this.action = 'Entre em contato com o suporte.'
+        this.action = 'Contact the support.'
         this.statusCode = statusCode || 500
+    }
+
+    toJSON() {
+        return {
+            name: this.name,
+            message: this.message,
+            action: this.action,
+            status_code: this.statusCode,
+        }
+    }
+}
+
+export class ValidationError extends Error {
+    constructor({ cause, message, action }) {
+        super(message || 'A validation error occurred.', {
+            cause,
+        })
+        this.name = 'ValidationError'
+        this.action = action || 'Verify the data sent and try again.'
+        this.statusCode = 400
+    }
+
+    toJSON() {
+        return {
+            name: this.name,
+            message: this.message,
+            action: this.action,
+            status_code: this.statusCode,
+        }
+    }
+}
+
+export class NotFoundError extends Error {
+    constructor({ cause, message, action }) {
+        super(message || 'This resource was not found.', {
+            cause,
+        })
+        this.name = 'NotFoundError'
+        this.action = action || 'Check the parameters sent and try again.'
+        this.statusCode = 404
     }
 
     toJSON() {
@@ -20,11 +60,11 @@ export class InternalServerError extends Error {
 
 export class ServiceError extends Error {
     constructor({ cause, message }) {
-        super(message || 'Serviço indisponível no momento.', {
+        super(message || 'Service unavailable at the moment.', {
             cause,
         })
         this.name = 'ServiceError'
-        this.action = 'Verifique se o serviço está disponível.'
+        this.action = 'Check if the service is available.'
         this.statusCode = 503
     }
 
@@ -40,10 +80,9 @@ export class ServiceError extends Error {
 
 export class MethodNotAllowedError extends Error {
     constructor() {
-        super('Método não permitido para este endpoint.')
+        super('Method not allowed for this endpoint.')
         this.name = 'MethodNotAllowedError'
-        this.action =
-            'Verifique se o método HTTP enviado é válido para este endpoint.'
+        this.action = 'Verify if the method is valid for this endpoint.'
         this.statusCode = 405
     }
 
