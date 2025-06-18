@@ -38,13 +38,33 @@ export class ValidationError extends Error {
     }
 }
 
+export class NotFoundError extends Error {
+    constructor({ cause, message, action }) {
+        super(message || 'This resource was not found.', {
+            cause,
+        })
+        this.name = 'NotFoundError'
+        this.action = action || 'Check the parameters sent and try again.'
+        this.statusCode = 404
+    }
+
+    toJSON() {
+        return {
+            name: this.name,
+            message: this.message,
+            action: this.action,
+            status_code: this.statusCode,
+        }
+    }
+}
+
 export class ServiceError extends Error {
     constructor({ cause, message }) {
         super(message || 'Service unavailable at the moment.', {
             cause,
         })
         this.name = 'ServiceError'
-        this.action = 'Verify if the service is available.'
+        this.action = 'Check if the service is available.'
         this.statusCode = 503
     }
 
