@@ -1,5 +1,7 @@
 import { version as uuidVersion } from 'uuid'
 import orchestrator from 'tests/orchestrator.js'
+import user from 'models/user'
+import password from 'models/password'
 
 beforeAll(async () => {
     await orchestrator.waitForAllServices()
@@ -30,7 +32,7 @@ describe('POST /api/v1/users', () => {
                 id: responseBody.id,
                 username: 'matheus',
                 email: 'matheus@example.com',
-                password: '123456',
+                password: responseBody.password,
                 created_at: responseBody.created_at,
                 updated_at: responseBody.updated_at,
             })
@@ -38,6 +40,18 @@ describe('POST /api/v1/users', () => {
             expect(uuidVersion(responseBody.id)).toBe(4)
             expect(Date.parse(responseBody.created_at)).not.toBeNaN()
             expect(Date.parse(responseBody.updated_at)).not.toBeNaN()
+
+            const userInDatabase = await user.findOneByUsername('matheus')
+            const correctPassswordMatch = await password.compare(
+                '123456',
+                userInDatabase.password
+            )
+            const incorrectPassswordMatch = await password.compare(
+                '123',
+                userInDatabase.password
+            )
+            expect(correctPassswordMatch).toBe(true)
+            expect(incorrectPassswordMatch).toBe(false)
         })
 
         test('With duplicated "email"', async () => {
